@@ -59,13 +59,15 @@ class App extends Component {
       list,
     };
 
+    this.onSearchChange = this.onSearchChange.bind(this);
+
     this.onClickMe = this.onClickMe.bind(this.state);
 
     this.onDismiss = this.onDismiss.bind(this);
 
   }
 
-  onClickMe() {
+  onClickMe = () => {
     console.log(this)
   }
 
@@ -81,8 +83,14 @@ class App extends Component {
       <div className="App">
         <h2>Hey This is News App</h2>
         <h2>{hello}</h2>
+        <form>
+          <input 
+          type="text"
+          onChange={this.onSearchChange}
+          />
+        </form>
         <button
-          onClick={this.onClickMe.bind(this)}
+          onClick={console.log("me")}
           type="button"
         >
           Click on
@@ -96,12 +104,19 @@ class App extends Component {
               <span>{item.num_comments}</span>
               <span>{item.points}</span>
               <span>
-                <button onClick={() => 
-                  this.onDismiss(item.objectID)} 
+                <button onClick={() => this.onDismiss(item.objectID)} 
                   type="button"
                 >
                 Dismiss
                 </button>
+                 <button onClick={() => { var i; for( i=0; i<item.length; i++) {
+                  console.log(item.objectID)
+                 } console.log(item.objectID)} }
+                  type="button"
+                >
+                id
+                </button>
+
               </span>
             </div>
         )}
