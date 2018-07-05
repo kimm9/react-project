@@ -11,6 +11,7 @@ class Search extends Component {
     search: "",
     breeds: [],
     results: [],
+    coinresults: [],
     coins: [],
     error: ""
   };
@@ -24,10 +25,11 @@ class Search extends Component {
       .then(res => {
         var coinNameArr=[];
         var coinList = res.data['Data']
+        console.log(coinList)
         for (var key in coinList) {
           coinNameArr.push(coinList[key]["CoinName"])
         }
-        this.setState({coins: coinNameArr})
+        this.setState({coins: coinNameArr.sort()})
       })
   }
 
@@ -43,10 +45,30 @@ class Search extends Component {
         if (res.data.status === "error") {
           throw new Error(res.data.message);
         }
+        console.log(res.data.message)
         this.setState({ results: res.data.message, error: "" });
       })
       .catch(err => this.setState({ error: err.message }));
   };
+
+  handleCoinSubmit = event => {
+    event.preventDefault();
+    API.getCoinList()
+      .then(res => {
+        var coinobj=[];
+        var coinInfo = [];
+        var coinList = res.data['Data']
+        if (coinList === "error") {
+          throw new Error(res.data.message);
+        }
+        for (var key in coinList) {
+          if (this.state.search.toUpperCase() == coinList[key]["CoinName"].toUpperCase() )
+          coinobj.push(coinList[key])
+        }
+        this.setState({ coinresults: coinobj})
+        console.log(coinobj)
+      })
+  }
 
   render() {
     return (
@@ -60,11 +82,15 @@ class Search extends Component {
           </Alert>
           <SearchForm
             handleFormSubmit={this.handleFormSubmit}
+            handleCoinSubmit={this.handleCoinSubmit}
             handleInputChange={this.handleInputChange}
             breeds={this.state.breeds}
             coins={this.state.coins}
           />
-          <SearchResults results={this.state.results}/>
+          <SearchResults 
+          results={this.state.results}
+          coinresults={this.state.coinresults}
+          />
         </Container>
       
     )
